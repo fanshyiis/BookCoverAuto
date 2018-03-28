@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style type="text/css">
+    table {
+        margin: 0 auto;
+        text-align: center;
+        border-collapse: collapse;
+        border: 1px solid #d4d4d4;
+    }
+
+    tr:nth-child(even) {
+        background: #d4d4d4;
+    }
+
+    th,
+    td {
+        padding: 10px 10px;
+        height: 50px;
+    }
+
+    th {
+        border-bottom: 1px solid #d4d4d4;
+    }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="467" height="666"></canvas>
+    <div style="width: 100px;height: 100px;background: #000;color: #fff;text-align: center;line-height: 100px;font-size: 30px" onclick="d()">画</div>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <script type="text/javascript" src="canvas2image.js"></script>
+    <script type="text/javascript" src="d.js"></script>
+    <script type="text/javascript">
+    $.ajax({
+        url: 'ssss.csv',
+        dataType: 'text'
+    }).done(successFunction);
+
+    var book = []
+
+    function successFunction(data) {
+        var allRows = data.split(/\r?\n|\r/);
+        var table = '<table>';
+        for (var singleRow = 0; singleRow < 10; singleRow++) {
+            if (singleRow === 0) {
+                table += '<thead>';
+                table += '<tr>';
+            } else {
+                table += '<tr>';
+            }
+            var rowCells = allRows[singleRow].split(',');
+            var m = {
+                a: rowCells[0],
+                b: rowCells[1],
+                c: rowCells[2],
+                d: rowCells[3]
+            }
+            book.push(m)
+            for (var rowCell = 0; rowCell < rowCells.length; rowCell++) {
+                if (singleRow === 0) {
+                    table += '<th>';
+                    table += rowCells[rowCell];
+                    table += '</th>';
+                } else {
+                    table += '<td>';
+                    table += rowCells[rowCell];
+                    table += '</td>';
+                }
+            }
+            if (singleRow === 0) {
+                table += '</tr>';
+                table += '</thead>';
+                table += '<tbody>';
+            } else {
+                table += '</tr>';
+            }
+        }
+        table += '</tbody>';
+        table += '</table>';
+        $('body').append(table);
+        // console.log(book)
+        // book.map((val, index) => {
+        //     console.log(val, index)
+        //     if (index !== 0) {
+        //        drawBook(val) 
+        //     }
+        // })
+    }
+
+    var b = book.length
+
+    function d() {
+        b = book.length - 1
+        for (var i = 0; i < book.length; i++) {
+            setTimeout(() => {
+                if (b !== 0) {
+                    console.log(b)
+                    drawBook(book[b])
+                    b--
+                }
+            }, i * 2000)
+        }
+    }
+
+    function drawBook(arr) {
+        console.log(arr)
+        var c = document.getElementById("myCanvas");
+        var img = 'c.png'
+        var ctx = c.getContext("2d");
+        // cxt.drawImage('c.png',0,0)
+        
+        var img = new Image();
+        if (Math.random() < 0.5) {
+          img.src = "c.png";
+        } else {
+          img.src = "b.png";
+        }
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0, 467, 666);
+            ctx.fillStyle = "#985d3f";
+            ctx.textAlign = "center";
+            ctx.font = "36px Arial";
+            ctx.fillText(arr.b.substring(0,8), 233, 100);
+            ctx.fillText(arr.b.substring(8,16), 233, 150);
+            ctx.fillText(arr.b.substring(16,24), 233, 200);
+            ctx.font = "20px Arial";
+            ctx.fillText(arr.c + "/著", 233, 240);
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "#fff";
+            ctx.fillText(arr.d, 233, 635);
+            var i = c.toDataURL()
+            download(i, arr.a, "png")
+            // Canvas2Image.saveAsPNG(c)
+        }
+    }
+    </script>
+    <script type="text/javascript">
+    // downloadFile()
+    // console.log(i)
+    // download(i)
+    // Canvas2Image.saveAsPNG(c)
+    </script>
+</body>
+
+</html>
